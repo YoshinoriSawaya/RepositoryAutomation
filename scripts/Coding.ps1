@@ -5,7 +5,11 @@
     [Parameter(Mandatory = $true)]
     [string]$IssueNumber
 )
+# コンソールのコードページをUTF-8(65001)に強制変更
+chcp 65001 | Out-Null
 
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+$env:PYTHONIOENCODING = "utf-8"
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $OutputEncoding = [System.Text.Encoding]::UTF8
 $ErrorActionPreference = "Stop"
@@ -28,11 +32,12 @@ $IssueBody = gh issue view $IssueNumber --json body -q ".body"
 
 # 3. Aiderへのプロンプト構築
 $AiderMessage = @"
-Implement the feature described in the issue below.
-STRICT RULES:
-1. You MUST ONLY modify the files provided in the context.
-2. DO NOT modify any shared, core, or infrastructure files outside this feature directory.
-3. Follow the Clean Architecture principles established in the scaffolded files.
+Implement the feature described in the issue.
+
+RULES FOR COMMENTS:
+1. Explain the logic using Japanese comments inside the code.
+2. Use XML documentation comments (///) for public methods to describe parameters and return values in Japanese.
+3. Ensure the file is saved in UTF-8 encoding.
 
 [Issue Details]
 $IssueBody
