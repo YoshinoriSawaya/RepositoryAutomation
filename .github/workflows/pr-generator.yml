@@ -15,7 +15,8 @@ jobs:
   generate-pr:
     # 非常に重要: クラウドではなく、あなたのローカルPCで実行させる指定
     runs-on: self-hosted
-    
+    env:
+      FEATURE_NAME: ""
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
