@@ -47,6 +47,7 @@ GitHub Actionsのワークフローで使用するため、以下の設定が必
 ローカル環境で GitHub Actions の Self-hosted Runner を起動する。
 ```powershell
 ./actions-runner/run.cmd
+```
 運用ルール
 Issueのタイトルは 機能名: 概要 の形式で作成すること。
 
