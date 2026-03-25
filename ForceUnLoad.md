@@ -1,0 +1,1 @@
+Invoke-RestMethod -Uri "http://localhost:11434/api/generate" -Method Post -Body (@{ model = "qwen2.5-coder:7b"; keep_alive = 0 } | ConvertTo-Json) -ContentType "application/json"
