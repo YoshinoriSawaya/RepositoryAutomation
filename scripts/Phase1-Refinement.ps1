@@ -51,5 +51,14 @@ $CommentBody = @"
 $RefinedInstructions
 "@
 
-gh issue comment $IssueNumber --body $CommentBody
+# --- 修正部分 ---
+# 一度UTF-8のテキストファイルとして保存し、--body-fileで渡す
+$TempFile = "temp_comment.md"
+[System.IO.File]::WriteAllText($TempFile, $CommentBody, [System.Text.Encoding]::UTF8)
+
+gh issue comment $IssueNumber --body-file $TempFile
+Remove-Item $TempFile -ErrorAction SilentlyContinue
+# ---------------
+
+
 Write-Host "Refinement完了。Issueにコメントしました。"
