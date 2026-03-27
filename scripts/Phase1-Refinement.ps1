@@ -32,18 +32,31 @@ if ($IssueText.Length -gt 4000) {
 
 # 3. LLMによる要件の整理
 $Prompt = @"
-以下のIssue内容を分析し、コーディングAI（Aider等）が直接実装できる具体的な「実装指示書」に変換してください。
-出力は指示書の本文のみとし、Markdown形式で整理してください。
+あなたは熟練のソフトウェアエンジニアです。以下のIssue内容に基づき、開発AI（Aider等）が即座に実装作業に入れる「実装指示書」をMarkdown形式で作成してください。
 
-[Issue内容]
+情報が短い、または不足している場合でも、「内容を入力してください」と返答するのではなく、一般的なWeb開発のベストプラクティスに基づいて必要な項目を推測し、実装案を提示してください。
+
+[対象のIssue]
 $IssueText
+
+[指示書の構成案]
+1. 概要 (Summary)
+2. 変更が必要なファイル/コンポーネントの推測
+3. 具体的な実装手順 (DBマイグレーション, UI変更等)
+4. テスト項目
+
+出力はMarkdownの指示書本文のみとしてください。挨拶や確認の言葉は一切不要です。
 "@
 
 $Payload = @{
     model      = "llama3.1:8b"
     prompt     = $Prompt
     stream     = $false
-    keep_alive = 0 # 推論後にVRAMを即解放
+    options    = @{
+        temperature = 0.7  # 少し創造性を許容し、短い入力から指示書を膨らませる
+        num_predict = 1000 # 十分な出力長さを確保する
+    }
+    keep_alive = 0 
 } | ConvertTo-Json -Depth 10
 
 Write-Host "Llama-3.1-8Bで指示書を生成中..."
