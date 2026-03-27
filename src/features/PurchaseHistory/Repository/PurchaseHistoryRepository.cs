@@ -42,6 +42,18 @@ namespace App.Features.PurchaseHistory.Repository
                 PurchasedAt = record.PurchasedAt
             }).ToList());
         }
+
+        public async Task<List<string>> GetPurchasedBookIdsAsync(string userId, List<string> bookIds)
+        {
+            if (string.IsNullOrEmpty(userId) || !bookIds.Any())
+                return new List<string>();
+
+            var query = _purchaseRecords
+                .Where(record => record.UserId == userId && bookIds.Contains(record.BookId))
+                .Select(record => record.BookId);
+
+            return await Task.FromResult(query.ToList());
+        }
     }
 
     public class PurchaseRecord
