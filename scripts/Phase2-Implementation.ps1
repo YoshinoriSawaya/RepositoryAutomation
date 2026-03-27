@@ -19,8 +19,8 @@ $Comments = $IssueData.comments
 
 $Instructions = $null
 foreach ($Comment in $Comments) {
-    # Phase 1の出力の後半部分（指示書本体）を確実に抽出する正規表現
-    if ($Comment.body -match '(?s)ready-for-coding ラベルを付与してください。\s*(.*)') {
+    # 「付与してください。」の後の改行以降をすべて抽出する（バッククォート等の影響を回避）
+    if ($Comment.body -match '(?s)付与してください。[^\n]*\n(.*)') {
         $Instructions = $Matches[1].Trim()
         break
     }
