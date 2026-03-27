@@ -9,12 +9,19 @@ $ErrorActionPreference = "Stop"
 
 Write-Host "=== Phase 1: Issue Refinement ==="
 
-# 1. Issueデータの取得
-$Issue = gh issue view $IssueNumber --json body, comments | ConvertFrom-Json
-$IssueText = "Issue Body:`n" + $Issue.body
-if ($Issue.comments.Length -gt 0) {
-    $IssueText += "`n`nComments:`n" + ($Issue.comments.body -join "`n--`n")
+# 1. Issueデータの取得（titleを追加）
+$IssueJson = gh issue view $IssueNumber --json title, body, comments
+$Issue = $IssueJson | ConvertFrom-Json
+
+# タイトルと本文を結合
+$IssueText = "【タイトル】`n$($Issue.title)`n`n【本文】`n$($Issue.body)"
+
+# コメントがあれば追記
+if ($Issue.comments -and $Issue.comments.Length -gt 0) {
+    $IssueText += "`n`n【コメント】`n" + ($Issue.comments.body -join "`n--`n")
 }
+
+Write-Host "抽出したIssueテキスト:`n$IssueText"
 
 # 2. VRAM保護: ゲートキーパーチェック
 if ($IssueText.Length -gt 4000) {
@@ -51,14 +58,14 @@ $CommentBody = @"
 $RefinedInstructions
 "@
 
-# --- 修正部分 ---
-# 一度UTF-8のテキストファイルとして保存し、--body-fileで渡す
+# Windowsのghコマンド引数バグを回避するため、一時ファイル経由で投稿
 $TempFile = "temp_comment.md"
 [System.IO.File]::WriteAllText($TempFile, $CommentBody, [System.Text.Encoding]::UTF8)
 
 gh issue comment $IssueNumber --body-file $TempFile
 Remove-Item $TempFile -ErrorAction SilentlyContinue
-# ---------------
+
+
 
 
 Write-Host "Refinement完了。Issueにコメントしました。"
