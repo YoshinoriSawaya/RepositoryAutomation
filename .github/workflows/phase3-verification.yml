@@ -1,0 +1,20 @@
+name: Phase 3 - Verification
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  verify-pr:
+    runs-on: self-hosted
+    # 無限ループを防ぐため、ボット自身が作成したPR、または特定のプレフィックスを持つブランチのみ対象にするのが安全です
+    if: startsWith(github.head_ref, 'feature/auto-issue-') 
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Diff取得のために全履歴を取得
+      - name: Run Verification
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ./scripts/Phase3-Verification.ps1 -PRNumber ${{ github.event.pull_request.number }}

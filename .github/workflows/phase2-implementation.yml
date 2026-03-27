@@ -1,0 +1,21 @@
+name: Phase 2 - Implementation
+
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  implement-feature:
+    runs-on: self-hosted
+    if: github.event.label.name == 'ready-for-coding'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Run Implementation
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ./scripts/Phase2-Implementation.ps1 -IssueNumber ${{ github.event.issue.number }}

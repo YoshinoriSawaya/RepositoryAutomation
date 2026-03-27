@@ -1,0 +1,21 @@
+name: Phase 1 - Issue Refinement
+
+on:
+  issues:
+    types: [opened]
+  issue_comment:
+    types: [created]
+
+jobs:
+  refine-issue:
+    runs-on: self-hosted
+    if: >
+      github.event_name == 'issues' || 
+      (github.event_name == 'issue_comment' && startsWith(github.event.comment.body, '/refine'))
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Refinement
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ./scripts/Phase1-Refinement.ps1 -IssueNumber ${{ github.event.issue.number }}
