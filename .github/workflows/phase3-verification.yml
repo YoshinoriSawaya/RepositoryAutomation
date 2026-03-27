@@ -18,3 +18,4 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           ./scripts/Phase3-Verification.ps1 -PRNumber ${{ github.event.pull_request.number }}
+        shell: pwsh

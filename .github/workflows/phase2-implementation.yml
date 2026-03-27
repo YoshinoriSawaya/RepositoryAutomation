@@ -19,3 +19,4 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           ./scripts/Phase2-Implementation.ps1 -IssueNumber ${{ github.event.issue.number }}
+        shell: pwsh
